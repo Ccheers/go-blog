@@ -128,7 +128,7 @@ func RoutersInit() *gin.Engine {
 		h.GET("/tags/:name", web.IndexTag)
 		h.GET("/detail/:id", web.Detail)
 		h.GET("/archives", web.Archives)
-		h.GET("/sitemap", web.SiteMap)
+		h.GET("/eric_sitemap.xml", web.SiteMap)
 		h.GET("/404", web.NoFound)
 	}
 

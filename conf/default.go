@@ -6,7 +6,6 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/speps/go-hashids"
-	"go-blog/common"
 	"go-blog/common/alarm"
 	"go-blog/common/hashid"
 	"go-blog/common/jwt"
@@ -30,12 +29,8 @@ var (
 )
 
 func init() {
-	var err error
-	Dirname, err = common.GetCurrentPath()
-	if err != nil {
-		panic(err)
-	}
 	flag.StringVar(&Env, "env", "dev", "environment")
+	flag.StringVar(&Dirname, "dir", "./config", "environment")
 	flag.Parse()
 }
 
@@ -230,9 +225,9 @@ func CnfInit() {
 		return
 	}
 	log.Println(fmt.Sprintf("local directory : %s", Dirname))
-	log.Printf(fmt.Sprintf("%s/config/%s", Dirname, fileName))
+	log.Printf(fmt.Sprintf("%s/%s", Dirname, fileName))
 	//读取yaml配置文件
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s/config/%s", Dirname, fileName))
+	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", Dirname, fileName))
 	if err != nil {
 	}
 	err = yaml.Unmarshal(yamlFile, &cf)

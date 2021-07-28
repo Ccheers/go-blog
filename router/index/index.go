@@ -1,6 +1,7 @@
 package index
 
 import (
+	"bytes"
 	"github.com/gin-gonic/gin"
 	"go-blog/common"
 	"go-blog/conf"
@@ -196,10 +197,9 @@ func (w *Web) NoFound(c *gin.Context) {
 }
 
 func (w *Web) SiteMap(c *gin.Context) {
-	c.XML(http.StatusOK)
-	w.Response(http.StatusOK, 0, gin.H{
-		"themeJs":  "/static/home/assets/js",
-		"themeCss": "/static/home/assets/css",
-	})
+	siteMap := service.GetSiteMap().XMLContent()
+
+	c.DataFromReader(http.StatusOK, int64(len(siteMap)), "application/xml; charset=utf-8", bytes.NewReader(siteMap), make(map[string]string))
+
 	return
 }
