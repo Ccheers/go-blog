@@ -20,17 +20,16 @@ package service
 //
 import (
 	"fmt"
-	"github.com/ikeikeikeike/go-sitemap-generator/v2/stm"
 	"go-blog/conf"
 	"go-blog/entity"
 	"time"
+
+	"github.com/snabb/sitemap"
 )
 
-//获取站点sitemap
-func GetSiteMap() (sm *stm.Sitemap) {
-	sm = stm.NewSitemap(1)
-
-	sm.SetDefaultHost("https://www.ericcai.fun")
+// GetSiteMap 获取站点sitemap
+func GetSiteMap() (sm *sitemap.Sitemap) {
+	sm = sitemap.New()
 
 	staticSitemap(sm)
 	postSiteMap(sm)
@@ -38,20 +37,17 @@ func GetSiteMap() (sm *stm.Sitemap) {
 	return sm
 }
 
-func staticSitemap(sm *stm.Sitemap) {
-	today := time.Now().Format("2006-01-02")
-	sm.Add(
-		stm.URL{
-			{"loc", "/"},
-			{"changefreq", "daily"},
-			{"priority", 0.7},
-			{"lastmod", today},
-		},
-	)
+func staticSitemap(sm *sitemap.Sitemap) {
+	today := time.Now()
+	sm.Add(&sitemap.URL{
+		Loc:        "https://www.ericcai.fun",
+		LastMod:    &today,
+		ChangeFreq: sitemap.Daily,
+	})
 }
 
-func postSiteMap(sm *stm.Sitemap) {
-	today := time.Now().Format("2006-01-02")
+func postSiteMap(sm *sitemap.Sitemap) {
+	today := time.Now()
 
 	post := new(entity.ZPosts)
 	rows, err := conf.SqlServer.Where("deleted_at IS NULL OR deleted_at = ?", "0001-01-01 00:00:00").Rows(post)
@@ -65,13 +61,10 @@ func postSiteMap(sm *stm.Sitemap) {
 		if err != nil {
 			break
 		}
-		sm.Add(
-			stm.URL{
-				{"loc", fmt.Sprintf("/detail/%d", post.Id)},
-				{"changefreq", "daily"},
-				{"priority", 0.7},
-				{"lastmod", today},
-			},
-		)
+		sm.Add(&sitemap.URL{
+			Loc:        fmt.Sprintf("https://www.ericcai.fun/detail/%d", post.Id),
+			LastMod:    &today,
+			ChangeFreq: sitemap.Daily,
+		})
 	}
 }

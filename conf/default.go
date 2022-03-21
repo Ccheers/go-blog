@@ -3,18 +3,19 @@ package conf
 import (
 	"flag"
 	"fmt"
-	"github.com/go-redis/redis"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/speps/go-hashids"
 	"go-blog/common/alarm"
 	"go-blog/common/hashid"
 	"go-blog/common/jwt"
 	"go-blog/common/mail"
 	"go-blog/common/qqcaptcha"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"time"
+
+	"github.com/go-redis/redis"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/speps/go-hashids"
+	"gopkg.in/yaml.v2"
 	"xorm.io/xorm"
 )
 
@@ -229,9 +230,11 @@ func CnfInit() {
 	//读取yaml配置文件
 	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", Dirname, fileName))
 	if err != nil {
+		panic(err)
 	}
 	err = yaml.Unmarshal(yamlFile, &cf)
 	if err != nil {
+		panic(err)
 	}
 	Cnf = cf
 	return

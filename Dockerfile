@@ -1,4 +1,4 @@
-FROM golang:1.15 AS builder
+FROM golang:1.17 AS builder
 
 COPY . /src
 WORKDIR /src
@@ -16,8 +16,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /src /app
 
 WORKDIR /app
-
-EXPOSE 8081
-VOLUME /data/conf
 
 CMD ["./bin/go-blog", "-env", "prod"]
