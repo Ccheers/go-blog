@@ -22,14 +22,13 @@ import (
 	"fmt"
 	"go-blog/conf"
 	"go-blog/entity"
+	"go-blog/sitemap"
 	"time"
-
-	"github.com/snabb/sitemap"
 )
 
 // GetSiteMap 获取站点sitemap
 func GetSiteMap() (sm *sitemap.Sitemap) {
-	sm = sitemap.New()
+	sm = sitemap.NewSitemap()
 
 	staticSitemap(sm)
 	postSiteMap(sm)
@@ -39,11 +38,7 @@ func GetSiteMap() (sm *sitemap.Sitemap) {
 
 func staticSitemap(sm *sitemap.Sitemap) {
 	today := time.Now()
-	sm.Add(&sitemap.URL{
-		Loc:        "https://www.ericcai.fun",
-		LastMod:    &today,
-		ChangeFreq: sitemap.Daily,
-	})
+	sm.Urls = append(sm.Urls, sitemap.NewUrl("https://www.ericcai.fun", today, sitemap.ChangefreqDaily, 1))
 }
 
 func postSiteMap(sm *sitemap.Sitemap) {
@@ -61,10 +56,11 @@ func postSiteMap(sm *sitemap.Sitemap) {
 		if err != nil {
 			break
 		}
-		sm.Add(&sitemap.URL{
-			Loc:        fmt.Sprintf("https://www.ericcai.fun/detail/%d", post.Id),
-			LastMod:    &today,
-			ChangeFreq: sitemap.Daily,
-		})
+		sm.Urls = append(sm.Urls, sitemap.NewUrl(
+			fmt.Sprintf("https://www.ericcai.fun/detail/%d", post.Id),
+			today,
+			sitemap.ChangefreqDaily,
+			0.7,
+		))
 	}
 }

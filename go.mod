@@ -14,7 +14,6 @@ require (
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/qiniu/go-sdk/v7 v7.9.7
 	github.com/satori/go.uuid v1.2.0
-	github.com/snabb/sitemap v1.0.0
 	github.com/speps/go-hashids v2.0.0+incompatible
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/russross/blackfriday.v2 v2.0.0-00010101000000-000000000000
@@ -35,7 +34,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/snabb/diagio v1.0.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/ugorji/go v1.1.4 // indirect
 	golang.org/x/image v0.0.0-20190501045829-6d32002ffd75 // indirect

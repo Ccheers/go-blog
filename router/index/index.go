@@ -23,47 +23,47 @@ func NewIndex() Home {
 }
 
 func (w *Web) Index(c *gin.Context) {
-	w.C = c
+
 	queryPage := c.DefaultQuery("page", "1")
 	queryLimit := c.DefaultQuery("limit", conf.Cnf.DefaultIndexLimit)
 
 	h, err := service.CommonData()
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
 	postData, err := service.IndexPost(queryPage, queryLimit, "default", "")
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
 	h["post"] = postData.PostListArr
 	h["paginate"] = postData.Paginate
 	h["title"] = h["system"].(*entity.ZSystems).Title
-	w.Response(http.StatusOK, 0, h)
+	w.Response(c, http.StatusOK, 0, h)
 	return
 }
 
 func (w *Web) IndexTag(c *gin.Context) {
-	w.C = c
+
 	queryPage := c.DefaultQuery("page", "1")
 	queryLimit := c.DefaultQuery("limit", conf.Cnf.DefaultIndexLimit)
 	name := c.Param("name")
 	h, err := service.CommonData()
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
 	postData, err := service.IndexPost(queryPage, queryLimit, "tag", name)
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
@@ -78,7 +78,7 @@ func (w *Web) IndexTag(c *gin.Context) {
 }
 
 func (w *Web) IndexCate(c *gin.Context) {
-	w.C = c
+
 	queryPage := c.DefaultQuery("page", "1")
 	queryLimit := c.DefaultQuery("limit", conf.Cnf.DefaultIndexLimit)
 	name := c.Param("name")
@@ -86,14 +86,14 @@ func (w *Web) IndexCate(c *gin.Context) {
 	h, err := service.CommonData()
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
 	postData, err := service.IndexPost(queryPage, queryLimit, "cate", name)
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
@@ -103,26 +103,26 @@ func (w *Web) IndexCate(c *gin.Context) {
 	h["tem"] = "cateList"
 	h["title"] = template.HTML(name + " --  category &nbsp;&nbsp;-&nbsp;&nbsp;" + h["system"].(*entity.ZSystems).Title)
 
-	w.Response(http.StatusOK, 0, h)
+	w.Response(c, http.StatusOK, 0, h)
 	return
 
 }
 
 func (w *Web) Detail(c *gin.Context) {
-	w.C = c
+
 	postIdStr := c.Param("id")
 
 	h, err := service.CommonData()
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
 	postDetail, err := service.IndexPostDetail(postIdStr)
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
@@ -141,23 +141,23 @@ func (w *Web) Detail(c *gin.Context) {
 	h["tem"] = "detail"
 	h["title"] = template.HTML(postDetail.Post.Title + " &nbsp;&nbsp;-&nbsp;&nbsp;" + h["system"].(*entity.ZSystems).Title)
 
-	w.Response(http.StatusOK, 0, h)
+	w.Response(c, http.StatusOK, 0, h)
 	return
 }
 
 func (w *Web) Archives(c *gin.Context) {
-	w.C = c
+
 	h, err := service.CommonData()
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 
 	res, err := service.PostArchives()
 	if err != nil {
 
-		w.Response(http.StatusOK, 404, h)
+		w.Response(c, http.StatusOK, 404, h)
 		return
 	}
 	loc, _ := time.LoadLocation("Asia/Shanghai")
@@ -184,13 +184,13 @@ func (w *Web) Archives(c *gin.Context) {
 	h["archives"] = newData
 	h["title"] = template.HTML("归档 &nbsp;&nbsp;-&nbsp;&nbsp;" + h["system"].(*entity.ZSystems).Title)
 
-	w.Response(http.StatusOK, 0, h)
+	w.Response(c, http.StatusOK, 0, h)
 	return
 }
 
 func (w *Web) NoFound(c *gin.Context) {
-	w.C = c
-	w.Response(http.StatusOK, 404, gin.H{
+
+	w.Response(c, http.StatusOK, 404, gin.H{
 		"themeJs":  "/static/home/assets/js",
 		"themeCss": "/static/home/assets/css",
 	})
@@ -200,7 +200,7 @@ func (w *Web) NoFound(c *gin.Context) {
 func (w *Web) SiteMap(c *gin.Context) {
 	siteMap := service.GetSiteMap()
 	buf := &bytes.Buffer{}
-	siteMap.WriteTo(buf)
-	c.DataFromReader(http.StatusOK, int64(buf.Len()), "application/xml; charset=utf-8", buf, make(map[string]string))
+	buf.WriteString(siteMap.String())
+	c.DataFromReader(http.StatusOK, int64(buf.Len()), "text/xml; charset=UTF-8", buf, make(map[string]string))
 	return
 }
